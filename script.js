@@ -40,6 +40,10 @@ class Game {
   }
   render(context){
     this.planet.draw(context);
+    context.beginPath();
+    context.moveTo(this.planet.x, this.planet.y);
+    context.lineTo(this.mouse.x, this.mouse.y);
+    context.stroke();
   }
 }
 
@@ -52,5 +56,12 @@ window.addEventListener('load', function() {
   c.lineWidth = 2;
 
   const game = new Game(canvas);
-  game.render(c);
+
+  function animate(){
+    c.clearRect(0, 0, canvas.width, canvas.height);
+    game.render(c);
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
+  
 });
