@@ -21,10 +21,15 @@ class Planet {
 class Player {
   constructor(game){
     this.game = game;
-    this.x;
-    this.y;
+    this.x = this.game.width * 0.5;
+    this.y = this.game.height * 0.5;
     this.radius = 40;
     
+  }
+  draw(context){
+    context.beginPath();
+    context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    context.stroke();
   }
 }
 
@@ -34,6 +39,7 @@ class Game {
     this.width = this.canvas.width;
     this.height = this.canvas.height;
     this.planet = new Planet(this);
+    this.player = new Player(this);
     this.mouse = {
       x: 0,
       y: 0
@@ -48,6 +54,7 @@ class Game {
   }
   render(context){
     this.planet.draw(context);
+    this.player.draw(context);
     context.beginPath();
     context.moveTo(this.planet.x, this.planet.y);
     context.lineTo(this.mouse.x, this.mouse.y);
@@ -69,7 +76,9 @@ window.onresize = function() {
 window.addEventListener('load', function() {
   const canvas = this.document.getElementById('canva');
   const c = canvas.getContext('2d');
-  if (window.innerWidth <= 480) { // Check if the screen width is less than or equal to 480px
+
+
+  if (window.innerWidth <= 480) { 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
   } else if (window.innerWidth <=1080) { 
@@ -79,6 +88,8 @@ window.addEventListener('load', function() {
     canvas.width = 800; 
     canvas.height = 800; 
   }
+
+
   c.strokeStyle = 'aquamarine';
   c.lineWidth = 2;
 
