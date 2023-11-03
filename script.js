@@ -7,7 +7,7 @@ class Planet {
     this.game = game;
     this.x = this.game.width * 0.5;
     this.y = this.game.height * 0.5;
-    this.radius = 80;
+    this.radius = 60;
     this.image = document.getElementById('planet');
   }
   draw(context){
@@ -21,6 +21,9 @@ class Planet {
 class Player {
   constructor(game){
     this.game = game;
+    this.x;
+    this.y;
+    this.radius = 40;
     
   }
 }
