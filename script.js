@@ -69,9 +69,17 @@ window.onresize = function() {
 window.addEventListener('load', function() {
   const canvas = this.document.getElementById('canva');
   const c = canvas.getContext('2d');
-  canvas.width = this.innerWidth;
-  canvas.height = 800;
-  c.strokeStyle = 'aquamarine'
+  if (window.innerWidth <= 480) { // Check if the screen width is less than or equal to 480px
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  } else if (window.innerWidth <=1080) { 
+      canvas.width = 800;
+      canvas.height = 800;
+  } else {
+    canvas.width = 800; 
+    canvas.height = 800; 
+  }
+  c.strokeStyle = 'aquamarine';
   c.lineWidth = 2;
 
   const game = new Game(canvas);
