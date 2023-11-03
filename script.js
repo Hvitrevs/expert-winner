@@ -1,6 +1,6 @@
 
 
-
+// reusable objects
 
 class Planet {
   constructor(game){
@@ -16,9 +16,14 @@ class Planet {
     context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     context.stroke();
   }
-
 }
 
+class Player {
+  constructor(game){
+    this.game = game;
+    
+  }
+}
 
 class Game {
   constructor(canvas){
@@ -26,17 +31,17 @@ class Game {
     this.width = this.canvas.width;
     this.height = this.canvas.height;
     this.planet = new Planet(this);
-
     this.mouse = {
       x: 0,
       y: 0
     }
-
     window.addEventListener('mousemove', e => {
-      this.mouse.x = e.x;
-      this.mouse.y = e.y;
-    });
+      // this.mouse.x = e.x;
+      // this.mouse.y = e.y;
 
+      this.mouse.x = e.offsetX;
+      this.mouse.y = e.offsetY;
+    });
   }
   render(context){
     this.planet.draw(context);
@@ -47,10 +52,21 @@ class Game {
   }
 }
 
+
+// canvas settings
+
+addEventListener('resize', function () {
+	canvas.width = innerWidth;
+	canvas.height = innerHeight;
+});
+
+window.onresize = function() {
+  location.reload();
+}
 window.addEventListener('load', function() {
   const canvas = this.document.getElementById('canva');
   const c = canvas.getContext('2d');
-  canvas.width = 800;
+  canvas.width = this.innerWidth;
   canvas.height = 800;
   c.strokeStyle = 'aquamarine'
   c.lineWidth = 2;
