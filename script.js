@@ -31,6 +31,9 @@ class Player {
     context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     context.stroke();
   }
+  update(){
+    
+  }
 }
 
 class Game {
