@@ -25,6 +25,7 @@ class Player {
     this.y = this.game.height * 0.5;
     this.radius = 40;
     this.image = document.getElementById('player');
+    this.aim;
     
   }
   draw(context){
@@ -34,7 +35,8 @@ class Player {
     context.stroke();
   }
   update(){
-    
+    this.aim = this.game.calcAim(this.game.mouse, this.game.planet);
+    this.x = this.game.planet.x + 50 * this.aim[0];
   }
 }
 
@@ -71,6 +73,9 @@ class Game {
     const dx = a.x - b.x;
     const dy = a.y - b.y;
     const distance = Math.hypot(dx, dy);
+    const aimX = dx / distance;
+    const aimY = dy / distance;
+    return [ aimX, aimY, dx, dy ];
   }
 }
 
