@@ -24,9 +24,11 @@ class Player {
     this.x = this.game.width * 0.5;
     this.y = this.game.height * 0.5;
     this.radius = 40;
+    this.image = document.getElementById('player');
     
   }
   draw(context){
+    context.drawImage(this.image, this.x - this.radius, this.y - this.radius);
     context.beginPath();
     context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     context.stroke();
@@ -58,10 +60,17 @@ class Game {
   render(context){
     this.planet.draw(context);
     this.player.draw(context);
+    this.player.update();
     context.beginPath();
     context.moveTo(this.planet.x, this.planet.y);
     context.lineTo(this.mouse.x, this.mouse.y);
     context.stroke();
+  } 
+  // calculate aiming to the planet
+  calcAim(a, b){
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
+    const distance = Math.hypot(dx, dy);
   }
 }
 
@@ -84,7 +93,7 @@ window.addEventListener('load', function() {
   if (window.innerWidth <= 480) { 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-  } else if (window.innerWidth <=1080) { 
+  } else if (window.innerWidth <= 1080) { 
       canvas.width = 800;
       canvas.height = 800;
   } else {
