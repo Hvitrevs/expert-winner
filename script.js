@@ -7,7 +7,7 @@ class Planet {
     this.game = game;
     this.x = this.game.width * 0.5;
     this.y = this.game.height * 0.5;
-    this.radius = 60;
+    this.radius = 80;
     this.image = document.getElementById('planet');
   }
   draw(context){
@@ -36,10 +36,13 @@ class Player {
   }
   update(){
     this.aim = this.game.calcAim(this.game.mouse, this.game.planet);
-    this.x = this.game.planet.x + 50 * this.aim[0];
+    this.x = this.game.planet.x + (this.game.planet.radius + this.radius) * this.aim[0];
+    this.y = this.game.planet.y + (this.game.planet.radius + this.radius) * this.aim[1];
   }
 }
 
+
+// the playground 
 class Game {
   constructor(canvas){
     this.canvas = canvas;
@@ -54,7 +57,6 @@ class Game {
     window.addEventListener('mousemove', e => {
       // this.mouse.x = e.x;
       // this.mouse.y = e.y;
-
       this.mouse.x = e.offsetX;
       this.mouse.y = e.offsetY;
     });
@@ -68,8 +70,8 @@ class Game {
     context.lineTo(this.mouse.x, this.mouse.y);
     context.stroke();
   } 
-  // calculate aiming to the planet
-  calcAim(a, b){
+  // calculate aiming   
+    calcAim(a, b){
     const dx = a.x - b.x;
     const dy = a.y - b.y;
     const distance = Math.hypot(dx, dy);
@@ -80,24 +82,25 @@ class Game {
 }
 
 
+
 // canvas settings
 
-addEventListener('resize', function () {
-	canvas.width = innerWidth;
-	canvas.height = innerHeight;
-});
 
-window.onresize = function() {
-  location.reload();
-}
 window.addEventListener('load', function() {
   const canvas = this.document.getElementById('canva');
   const c = canvas.getContext('2d');
 
-
+  addEventListener('resize', function () {
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+  });
+  
+  window.onresize = function() {
+    location.reload();
+  }
   if (window.innerWidth <= 480) { 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = 800;
+    canvas.height = 800;
   } else if (window.innerWidth <= 1080) { 
       canvas.width = 800;
       canvas.height = 800;
