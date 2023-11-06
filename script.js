@@ -14,7 +14,7 @@ class Planet {
     context.drawImage(this.image, this.x - 100, this.y - 100);
     context.beginPath();
     context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    context.stroke();
+    // context.stroke();
   }
 }
 
@@ -32,7 +32,7 @@ class Player {
     context.drawImage(this.image, this.x - this.radius, this.y - this.radius);
     context.beginPath();
     context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    context.stroke();
+    // context.stroke();
   }
   update(){
     this.aim = this.game.calcAim(this.game.mouse, this.game.planet);
