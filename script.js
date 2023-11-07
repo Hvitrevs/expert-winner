@@ -26,18 +26,24 @@ class Player {
     this.radius = 40;
     this.image = document.getElementById('player');
     this.aim;
+    this.angle = 0;
     
   }
   draw(context){
-    context.drawImage(this.image, this.x - this.radius, this.y - this.radius);
+    context.save();
+    context.translate(this.x, this.y);
+    context.rotate(this.angle);
+    context.drawImage(this.image, - this.radius,  - this.radius);
     context.beginPath();
-    context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    context.arc(0, 0, this.radius, 0, Math.PI * 2);
+    context.restore();
     // context.stroke();
   }
   update(){
     this.aim = this.game.calcAim(this.game.mouse, this.game.planet);
     this.x = this.game.planet.x + (this.game.planet.radius + this.radius) * this.aim[0];
     this.y = this.game.planet.y + (this.game.planet.radius + this.radius) * this.aim[1];
+    this.angle = Math.atan2(this.aim[3], this.aim[2]);
   }
 }
 
@@ -50,6 +56,7 @@ class Game {
     this.height = this.canvas.height;
     this.planet = new Planet(this);
     this.player = new Player(this);
+    this.debug = true;
     this.mouse = {
       x: 0,
       y: 0
@@ -60,15 +67,16 @@ class Game {
       this.mouse.x = e.offsetX;
       this.mouse.y = e.offsetY;
     });
+    window.addEventListener('keyup', e => {
+      if( e.key === 'd') this.debug = true;
+    });
   }
   render(context){
     this.planet.draw(context);
     this.player.draw(context);
     this.player.update();
     context.beginPath();
-    context.moveTo(this.planet.x, this.planet.y);
-    context.lineTo(this.mouse.x, this.mouse.y);
-    context.stroke();
+
   } 
   // calculate aiming   
     calcAim(a, b){
