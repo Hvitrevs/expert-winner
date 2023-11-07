@@ -34,10 +34,13 @@ class Player {
     context.translate(this.x, this.y);
     context.rotate(this.angle);
     context.drawImage(this.image, - this.radius,  - this.radius);
-    context.beginPath();
-    context.arc(0, 0, this.radius, 0, Math.PI * 2);
+    if (this.game.debug){
+      context.beginPath();
+      context.arc(0, 0, this.radius, 0, Math.PI * 2);
+      context.stroke();
+    }
+
     context.restore();
-    // context.stroke();
   }
   update(){
     this.aim = this.game.calcAim(this.game.mouse, this.game.planet);
@@ -68,7 +71,7 @@ class Game {
       this.mouse.y = e.offsetY;
     });
     window.addEventListener('keyup', e => {
-      if( e.key === 'd') this.debug = true;
+      if( e.key === 'd') this.debug = !this.debug;
     });
   }
   render(context){
