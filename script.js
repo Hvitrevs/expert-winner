@@ -52,6 +52,26 @@ class Player {
 }
 
 
+// pull of reusable objects
+class Projectile {
+  constructor(game){
+    this.game = game;
+    this.x;
+    this.y;
+    this.radius = 20;
+    this.free = true;
+
+
+  }
+  start(){
+    this.free = false;
+  }
+  reset(){
+    this.free = true;
+  }
+}
+
+
 // the playground 
 class Game {
   constructor(canvas){
