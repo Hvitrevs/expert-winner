@@ -105,6 +105,11 @@ class Game {
       x: 0,
       y: 0
     }
+    window.addEventListener('mousedown', e => {
+      this.mouse.x = e.offsetX;
+      this.mouse.y = e.offsetY;
+      this.player.shoot();
+    });
     window.addEventListener('mousemove', e => {
       // this.mouse.x = e.x;
       // this.mouse.y = e.y;
@@ -133,7 +138,12 @@ class Game {
   }
   createProjectilePool(){
     for (let i = 0; i < this.numberofProjectiles; i++){
-      this.projectilePool.push(new Projectile());
+      this.projectilePool.push(new Projectile(this));
+    }
+  }
+  getProgectile(){
+    for (let i = 0; i < this.projectilePool.length; i++){
+      if(this.projectilePool[1].free) return this.projectilePool[1];
     }
   }
 }
