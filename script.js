@@ -49,6 +49,10 @@ class Player {
     this.y = this.game.planet.y + (this.game.planet.radius + this.radius) * this.aim[1];
     this.angle = Math.atan2(this.aim[3], this.aim[2]);
   }
+  shoot(){
+    const projectile = this.game.getProgectile();
+    if(projectile) projectile.start(100, 100);
+  }
 }
 
 
@@ -65,16 +69,21 @@ class Projectile {
 
 
   }
-  start(){
+  start(x, y){
     this.free = false;
+    this.x = x;
+    this.y = y;
+
   }
   reset(){
     this.free = true;
   }
   draw(){
     if (!this.free){
+      context.save();
       context.beginPath();
       context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      context.fill();
     }
   }
   update(){
@@ -124,7 +133,10 @@ class Game {
     this.planet.draw(context);
     this.player.draw(context);
     this.player.update();
-    context.beginPath();
+    this.projectilePool.forEach(projectile => {
+      projectile.draw(context);
+      projectile.update();
+    })
 
   } 
   // calculate aiming   
