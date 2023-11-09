@@ -51,7 +51,7 @@ class Player {
   }
   shoot(){
     const projectile = this.game.getProgectile();
-    if(projectile) projectile.start(this.x, this.y);
+    if(projectile) projectile.start(this.x + this.radius * this.aim[0], this.y + this.radius * this.aim[1], this.aim[0], this.aim[1]);
     console.log(projectile);
   }
 }
@@ -63,17 +63,20 @@ class Projectile {
     this.game = game;
     this.x;
     this.y;
-    this.radius = 20;
+    this.radius = 5;
     this.speedX = 1;
     this.speedY = 1;
+    this.speedModifier = 5;
     this.free = true;
 
 
   }
-  start(x, y){
+  start(x, y, speedX, speedY){
     this.free = false;
     this.x = x;
     this.y = y;
+    this.speedX = speedX * this.speedModifier;
+    this.speedY = speedY * this.speedModifier;
 
   }
   reset(){
@@ -114,7 +117,7 @@ class Game {
     this.debug = true;
 
     this.projectilePool = [];
-    this.numberofProjectiles = 5;
+    this.numberOfProjectiles = 15;
     this.createProjectilePool();
 
 
@@ -122,19 +125,22 @@ class Game {
       x: 0,
       y: 0
     }
-    window.addEventListener('mousedown', e => {
-      this.mouse.x = e.offsetX;
-      this.mouse.y = e.offsetY;
-      this.player.shoot();
-    });
+
     window.addEventListener('mousemove', e => {
       // this.mouse.x = e.x;
       // this.mouse.y = e.y;
       this.mouse.x = e.offsetX;
       this.mouse.y = e.offsetY;
     });
+
+    window.addEventListener('mousedown', e => {
+      this.mouse.x = e.offsetX;
+      this.mouse.y = e.offsetY;
+      this.player.shoot();
+    });
     window.addEventListener('keyup', e => {
       if( e.key === 'd') this.debug = !this.debug;
+      else if (e.key === 'w') this.player.shoot();
     });
   }
   render(context){
@@ -157,13 +163,13 @@ class Game {
     return [ aimX, aimY, dx, dy ];
   }
   createProjectilePool(){
-    for (let i = 0; i < this.numberofProjectiles; i++){
+    for (let i = 0; i < this.numberOfProjectiles; i++){
       this.projectilePool.push(new Projectile(this));
     }
   }
   getProgectile(){
     for (let i = 0; i < this.projectilePool.length; i++){
-      if(this.projectilePool[1].free) return this.projectilePool[1];
+      if (this.projectilePool[i].free) return this.projectilePool[i];
     }
   }
 }
