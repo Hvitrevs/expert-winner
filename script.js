@@ -51,7 +51,8 @@ class Player {
   }
   shoot(){
     const projectile = this.game.getProgectile();
-    if(projectile) projectile.start(100, 100);
+    if(projectile) projectile.start(this.x, this.y);
+    console.log(projectile);
   }
 }
 
@@ -78,12 +79,14 @@ class Projectile {
   reset(){
     this.free = true;
   }
-  draw(){
+  draw(context){
     if (!this.free){
       context.save();
       context.beginPath();
       context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      context.fillStyle = 'gold';
       context.fill();
+      context.restore();
     }
   }
   update(){
