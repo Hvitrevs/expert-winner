@@ -52,7 +52,6 @@ class Player {
   shoot(){
     const projectile = this.game.getProgectile();
     if(projectile) projectile.start(this.x + this.radius * this.aim[0], this.y + this.radius * this.aim[1], this.aim[0], this.aim[1]);
-    console.log(projectile);
   }
 }
 
@@ -105,6 +104,39 @@ class Projectile {
   }
 }
 
+class Enemy {
+  constructor(game){
+    this.game = game;
+    this.x = 100;
+    this.y = 100;
+    this.radius = 40;
+    this.width = this.radius * 2;
+    this.height = this.radius * 2;
+    this.speedX = 0;
+    this.speedY = 0;
+    this.free = true;
+  }
+  start(){
+    this.free = false;
+  }
+  reset(){
+    this.free = true;
+  }
+  draw(context){
+    if (!this.free){
+      context.beginPath();
+      context.arc( this.x, this.y, this.radius, 0, Math.PI * 2);
+      context.stroke();
+
+    }
+  }
+  update(){
+    if (!this.free){
+      this.x += this.speedX;
+      this.y += this.speedY;
+    }
+  }
+}
 
 // the playground 
 class Game {
@@ -120,6 +152,9 @@ class Game {
     this.numberOfProjectiles = 15;
     this.createProjectilePool();
 
+    this.enemyPool = [];
+    this.numberOfEnemies = 20;
+    this.createEnemyPool();
 
     this.mouse = {
       x: 0,
@@ -140,7 +175,7 @@ class Game {
     });
     window.addEventListener('keyup', e => {
       if( e.key === 'd') this.debug = !this.debug;
-      else if (e.key === 'w') this.player.shoot();
+      else if (e.key === 'f') this.player.shoot();
     });
   }
   render(context){
@@ -150,6 +185,10 @@ class Game {
     this.projectilePool.forEach(projectile => {
       projectile.draw(context);
       projectile.update();
+    });
+    this.enemyPool.forEach(enemy => {
+      enemy.draw(context);
+      enemy.update();
     })
 
   } 
@@ -170,6 +209,16 @@ class Game {
   getProgectile(){
     for (let i = 0; i < this.projectilePool.length; i++){
       if (this.projectilePool[i].free) return this.projectilePool[i];
+    }
+  }
+  createEnemyPool(){
+    for (let i = 0; i < this.numberOfEnemies; i++){
+      this.enemyPool.push(new Enemy(this));
+    }
+  }
+  getEnemy(){
+    for (let i = 0; i < this.enemyPool.length; i++){
+      if (this.enemyPool[i].free) return this.enemyPool[i];
     }
   }
 }
