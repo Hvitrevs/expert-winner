@@ -107,9 +107,9 @@ class Projectile {
 class Enemy {
   constructor(game){
     this.game = game;
-    this.x = 100;
-    this.y = 100;
-    this.radius = 40;
+    this.x = 0;
+    this.y = 0;
+    this.radius = 20;
     this.width = this.radius * 2;
     this.height = this.radius * 2;
     this.speedX = 0;
@@ -118,6 +118,11 @@ class Enemy {
   }
   start(){
     this.free = false;
+    this.x = Math.random() * this.game.width;
+    this.y = Math.random() * this.game.height;
+    const aim = this.game.calcAim(this, this.game.planet);
+    this.speedX = aim[0];
+    this.speedY = aim[1];
   }
   reset(){
     this.free = true;
@@ -134,6 +139,10 @@ class Enemy {
     if (!this.free){
       this.x += this.speedX;
       this.y += this.speedY;
+
+      if (this.game.checkCollision(this, this.game.planet)){
+        this.reset();
+      }
     }
   }
 }
@@ -155,6 +164,9 @@ class Game {
     this.enemyPool = [];
     this.numberOfEnemies = 20;
     this.createEnemyPool();
+    this.enemyPool[0].start();
+    this.enemyPool[1].start();
+    this.enemyPool[2].start();
 
     this.mouse = {
       x: 0,
@@ -190,7 +202,6 @@ class Game {
       enemy.draw(context);
       enemy.update();
     })
-
   } 
   // calculate aiming   
     calcAim(a, b){
@@ -200,6 +211,13 @@ class Game {
     const aimX = dx / distance;
     const aimY = dy / distance;
     return [ aimX, aimY, dx, dy ];
+  }
+  checkCollision(a, b){
+    const dx = a.x - b.x;
+    const dy = a.y - b.y; 
+    const distance = Math.hypot(dx, dy);
+    const sumOfRadii = a.radius + b.radius;
+    return distance < sumOfRadii;
   }
   createProjectilePool(){
     for (let i = 0; i < this.numberOfProjectiles; i++){
