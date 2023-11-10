@@ -169,8 +169,7 @@ class Game {
     this.createEnemyPool();
 
     this.enemyPool[0].start();
-    this.enemyPool[1].start();
-    this.enemyPool[2].start();
+
 
     this.mouse = {
       x: 0,
@@ -191,9 +190,10 @@ class Game {
     });
     window.addEventListener('keyup', e => {
       if( e.key === 'd') this.debug = !this.debug;
+      else if( e.key === 'f') this.player.shoot();
     });
   }
-  render(context){
+  render(context, deltaTime){
     this.planet.draw(context);
     this.player.draw(context);
     this.player.update();
@@ -259,10 +259,12 @@ window.addEventListener('load', function() {
   c.lineWidth = 2;
 
   const game = new Game(canvas);
-
-  function animate(){
+  let lastTime = 0;
+  function animate(timeStamp){
+    const deltaTime = timeStamp - lastTime;
+    lastTime = timeStamp;
     c.clearRect(0, 0, canvas.width, canvas.height);
-    game.render(c);
+    game.render(c, deltaTime);
     requestAnimationFrame(animate);
   }
   requestAnimationFrame(animate);
