@@ -183,7 +183,18 @@ class Asteroid extends Enemy {
     this.frameY = Math.floor(Math.random() * 4);
     this.frameX = 0;
     this.maxFrame = 7;
-    this.lives = 2;
+    this.lives = 1;
+    this.maxLives = this.lives;
+  }
+}
+class Lobstermorph extends Enemy {
+  constructor(game){
+    super(game);
+    this.image = document.getElementById('lobstermorph');
+    this.frameY = Math.floor(Math.random() * 4);
+    this.frameX = 0;
+    this.maxFrame = 14;
+    this.lives = 1;
     this.maxLives = this.lives;
   }
 }
@@ -207,7 +218,7 @@ class Game {
     this.createEnemyPool();
     this.enemyPool[0].start();
     this.enemyTimer = 0;
-    this.enemyInterval = 700;
+    this.enemyInterval = 950;
 
     this.spriteUpdate = false;
     this.spriteTimer = 0;
@@ -253,7 +264,7 @@ class Game {
     });
 
     if (this.enemyTimer < this.enemyInterval){
-      this.enemyTimer += deltaTime;
+        this.enemyTimer += deltaTime;
     } else {
       this.enemyTimer = 0;
       const enemy = this.getEnemy();
@@ -262,7 +273,7 @@ class Game {
 
 
     if (this.spriteTimer < this.spriteInterval){
-        this.spriteInterval += deltaTime;
+        this.spriteTimer += deltaTime;
         this.spriteUpdate = false;
     } else {
       this.spriteTimer = 0;
