@@ -114,6 +114,7 @@ class Enemy {
     this.height = this.radius * 2;
     this.speedX = 0;
     this.speedY = 0;
+    this.angle = 0;
     this.free = true;
   }
   start(){
@@ -125,12 +126,13 @@ class Enemy {
         this.x = Math.random() * this.game.width;
         this.y = Math.random() < 0.5 ? -this.radius : this.game.height + this.radius;
     } else {
-      this.x = Math.random() < 0.5 ? -this.radius : this.game.width + this.game.radius;
+      this.x = Math.random() < 0.5 ? -this.radius : this.game.width + this.radius;
       this.y = Math.random() * this.game.height;
     }
     const aim = this.game.calcAim(this, this.game.planet);
     this.speedX = aim[0];
     this.speedY = aim[1];
+    this.angle = Math.atan2(aim[3], aim[2]) + Math.PI * 0.5;
   }
   reset(){
     this.free = true;
@@ -138,17 +140,21 @@ class Enemy {
 
   hit(damage){
     this.lives -= damage;
-    this.frameX = this.maxLives - this.lives;
+    if (this.lives >= 1) this.frameX++;
   }
   draw(context){
     if (!this.free){
-      context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x - this.radius, this.y - this.radius, this.width, this.height);
+      context.save();
+      context.translate(this.x, this.y);
+      context.rotate(this.angle);
+      context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height,  - this.radius,  - this.radius, this.width, this.height);
       if (this.game.debug){
       context.beginPath();
       context.arc( this.x, this.y, this.radius, 0, Math.PI * 2);
       context.stroke();
-      context.fillText(this.lives, this.x, this.y);
+      context.fillText(this.lives, 0, 0);
       }
+      context.restore();
     }
   }
   update(){
@@ -197,7 +203,7 @@ class Lobstermorph extends Enemy {
     this.frameY = Math.floor(Math.random() * 4);
     this.frameX = 0;
     this.maxFrame = 14;
-    this.lives = 3;
+    this.lives = 2;
     this.maxLives = this.lives;
   }
 }
@@ -312,7 +318,7 @@ class Game {
   }
   createEnemyPool(){
     for (let i = 0; i < this.numberOfEnemies; i++){
-      // this.enemyPool.push(new Asteroid(this));
+      this.enemyPool.push(new Asteroid(this));
       this.enemyPool.push(new Lobstermorph(this));
     }
   }
