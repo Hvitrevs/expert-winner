@@ -44,7 +44,7 @@ class Player {
     context.restore();
   }
   update(){
-    this.aim = this.game.calcAim(this.game.mouse, this.game.planet);
+    this.aim = this.game.calcAim( this.game.planet, this.game.mouse);
     this.x = this.game.planet.x + (this.game.planet.radius + this.radius) * this.aim[0];
     this.y = this.game.planet.y + (this.game.planet.radius + this.radius) * this.aim[1];
     this.angle = Math.atan2(this.aim[3], this.aim[2]);
@@ -97,7 +97,7 @@ class Projectile {
       this.y += this.speedY;
     }
 
-    // reset outside visible game area
+  // reset outside visible game area
     if(this.x < 0 || this.x > this.game.width || this.y < 0 || this.y > this.game.height){
       this.reset();
     }
@@ -109,7 +109,7 @@ class Enemy {
     this.game = game;
     this.x = 0;
     this.y = 0;
-    this.radius = 20;
+    this.radius = 40;
     this.width = this.radius * 2;
     this.height = this.radius * 2;
     this.speedX = 0;
@@ -136,11 +136,14 @@ class Enemy {
     }
   }
   update(){
-    if (!this.free){
-      this.x += this.speedX;
-      this.y += this.speedY;
+    if  (!this.free){
+        this.x += this.speedX;
+        this.y += this.speedY;
 
       if (this.game.checkCollision(this, this.game.planet)){
+        this.reset();
+      }
+      if (this.game.checkCollision(this, this.game.player)){
         this.reset();
       }
     }
@@ -164,6 +167,7 @@ class Game {
     this.enemyPool = [];
     this.numberOfEnemies = 20;
     this.createEnemyPool();
+
     this.enemyPool[0].start();
     this.enemyPool[1].start();
     this.enemyPool[2].start();
@@ -187,7 +191,6 @@ class Game {
     });
     window.addEventListener('keyup', e => {
       if( e.key === 'd') this.debug = !this.debug;
-      else if (e.key === 'f') this.player.shoot();
     });
   }
   render(context){
@@ -201,15 +204,15 @@ class Game {
     this.enemyPool.forEach(enemy => {
       enemy.draw(context);
       enemy.update();
-    })
+    });
   } 
   // calculate aiming   
     calcAim(a, b){
     const dx = a.x - b.x;
     const dy = a.y - b.y;
     const distance = Math.hypot(dx, dy);
-    const aimX = dx / distance;
-    const aimY = dy / distance;
+    const aimX = dx / distance * -1;
+    const aimY = dy / distance * -1;
     return [ aimX, aimY, dx, dy ];
   }
   checkCollision(a, b){
@@ -249,26 +252,8 @@ class Game {
 window.addEventListener('load', function() {
   const canvas = this.document.getElementById('canva');
   const c = canvas.getContext('2d');
-
-  addEventListener('resize', function () {
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
-  });
-  
-  window.onresize = function() {
-    location.reload();
-  }
-  if (window.innerWidth <= 480) { 
-    canvas.width = 800;
-    canvas.height = 800;
-  } else if (window.innerWidth <= 1080) { 
-      canvas.width = 800;
-      canvas.height = 800;
-  } else {
-    canvas.width = 800; 
-    canvas.height = 800; 
-  }
-
+  canvas.width = 800;
+  canvas.height = 800;
 
   c.strokeStyle = 'aquamarine';
   c.lineWidth = 2;
