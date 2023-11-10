@@ -118,6 +118,8 @@ class Enemy {
   }
   start(){
     this.free = false;
+    this.frameX = 0;
+    this.lives = this.maxLives;
     this.frameY = Math.floor(Math.random() * 4);
     if (Math.random() < 0.5) {
         this.x = Math.random() * this.game.width;
@@ -133,13 +135,18 @@ class Enemy {
   reset(){
     this.free = true;
   }
+
+  hit(damage){
+    this.lives -= damage;
+  }
   draw(context){
     if (!this.free){
-      context.drawImage(this.image, 0 * this.width, this.frameY * this.height, this.width, this.height, this.x - this.radius, this.y - this.radius, this.width, this.height);
+      context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x - this.radius, this.y - this.radius, this.width, this.height);
       if (this.game.debug){
       context.beginPath();
       context.arc( this.x, this.y, this.radius, 0, Math.PI * 2);
       context.stroke();
+      context.fillText(this.lives, this.x, this.y);
       }
     }
   }
@@ -155,11 +162,16 @@ class Enemy {
         this.reset();
       }
       this.game.projectilePool.forEach(projectile => {
-        if (!projectile.free && this.game.checkCollision(this, projectile)){
+        if (!projectile.free && this.game.checkCollision(this, projectile) && this.lives >= 1){
           projectile.reset();
-          this.reset();
+          this.hit(1);
         }
-      })
+      });
+
+      if (this.lives < 1 && this.game.spriteUpdate ){
+        this.frameX++;
+      }
+      if (this.frameX > this.maxFrame) this.reset();
     }
   }
 }
@@ -169,7 +181,10 @@ class Asteroid extends Enemy {
     super(game);
     this.image = document.getElementById('asteroid');
     this.frameY = Math.floor(Math.random() * 4);
-    this.lives = 5;
+    this.frameX = 0;
+    this.maxFrame = 7;
+    this.lives = 2;
+    this.maxLives = this.lives;
   }
 }
 
@@ -190,10 +205,13 @@ class Game {
     this.enemyPool = [];
     this.numberOfEnemies = 20;
     this.createEnemyPool();
-
     this.enemyPool[0].start();
     this.enemyTimer = 0;
-    this.enemyInterval = 1000;
+    this.enemyInterval = 700;
+
+    this.spriteUpdate = false;
+    this.spriteTimer = 0;
+    this.spriteInterval = 150;
 
 
     this.mouse = {
@@ -222,20 +240,33 @@ class Game {
     this.planet.draw(context);
     this.player.draw(context);
     this.player.update();
+
+
     this.projectilePool.forEach(projectile => {
       projectile.draw(context);
       projectile.update();
     });
+
     this.enemyPool.forEach(enemy => {
       enemy.draw(context);
       enemy.update();
     });
+
     if (this.enemyTimer < this.enemyInterval){
       this.enemyTimer += deltaTime;
     } else {
       this.enemyTimer = 0;
       const enemy = this.getEnemy();
       if(enemy) enemy.start();
+    }
+
+
+    if (this.spriteTimer < this.spriteInterval){
+        this.spriteInterval += deltaTime;
+        this.spriteUpdate = false;
+    } else {
+      this.spriteTimer = 0;
+      this.spriteUpdate = true;
     }
 
   } 
@@ -289,7 +320,11 @@ window.addEventListener('load', function() {
   canvas.height = 800;
 
   c.strokeStyle = 'aquamarine';
-  c.lineWidth = 2;
+  c.lineWidth = 1;
+  c.fillStyle = 'white';
+  c.font = '50px Helvetica';
+  c.textBaseline = 'middle';
+  c.textAligh = 'center';
 
   const game = new Game(canvas);
   let lastTime = 0;
