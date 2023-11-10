@@ -138,6 +138,7 @@ class Enemy {
 
   hit(damage){
     this.lives -= damage;
+    this.frameX = this.maxLives - this.lives;
   }
   draw(context){
     if (!this.free){
@@ -156,10 +157,12 @@ class Enemy {
         this.y += this.speedY;
 
       if (this.game.checkCollision(this, this.game.planet)){
-        this.reset();
+        this.lives = 0;
+        this.speedX = 0;
+        this.speedY = 0;
       }
       if (this.game.checkCollision(this, this.game.player)){
-        this.reset();
+        this.lives = 0;
       }
       this.game.projectilePool.forEach(projectile => {
         if (!projectile.free && this.game.checkCollision(this, projectile) && this.lives >= 1){
@@ -194,7 +197,7 @@ class Lobstermorph extends Enemy {
     this.frameY = Math.floor(Math.random() * 4);
     this.frameX = 0;
     this.maxFrame = 14;
-    this.lives = 1;
+    this.lives = 3;
     this.maxLives = this.lives;
   }
 }
@@ -222,7 +225,7 @@ class Game {
 
     this.spriteUpdate = false;
     this.spriteTimer = 0;
-    this.spriteInterval = 150;
+    this.spriteInterval = 50;
 
 
     this.mouse = {
@@ -309,7 +312,8 @@ class Game {
   }
   createEnemyPool(){
     for (let i = 0; i < this.numberOfEnemies; i++){
-      this.enemyPool.push(new Asteroid(this));
+      // this.enemyPool.push(new Asteroid(this));
+      this.enemyPool.push(new Lobstermorph(this));
     }
   }
   getEnemy(){
