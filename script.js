@@ -151,6 +151,12 @@ class Enemy {
       if (this.game.checkCollision(this, this.game.player)){
         this.reset();
       }
+      this.game.projectilePool.forEach(projectile => {
+        if (!projectile.free && this.game.checkCollision(this, projectile)){
+          projectile.reset();
+          this.reset();
+        }
+      })
     }
   }
 }
