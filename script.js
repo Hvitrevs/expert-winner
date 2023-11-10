@@ -118,11 +118,12 @@ class Enemy {
   }
   start(){
     this.free = false;
+    this.frameY = Math.floor(Math.random() * 4);
     if (Math.random() < 0.5) {
         this.x = Math.random() * this.game.width;
-        this.y = Math.random() < 0.5 ? 0 : this.game.height;
+        this.y = Math.random() < 0.5 ? -this.radius : this.game.height + this.radius;
     } else {
-      this.x = Math.random() < 0.5 ? 0 : this.game.width;
+      this.x = Math.random() < 0.5 ? -this.radius : this.game.width + this.game.radius;
       this.y = Math.random() * this.game.height;
     }
     const aim = this.game.calcAim(this, this.game.planet);
@@ -134,10 +135,12 @@ class Enemy {
   }
   draw(context){
     if (!this.free){
+      context.drawImage(this.image, 0 * this.width, this.frameY * this.height, this.width, this.height, this.x - this.radius, this.y - this.radius, this.width, this.height);
+      if (this.game.debug){
       context.beginPath();
       context.arc( this.x, this.y, this.radius, 0, Math.PI * 2);
       context.stroke();
-
+      }
     }
   }
   update(){
@@ -161,6 +164,15 @@ class Enemy {
   }
 }
 
+class Asteroid extends Enemy {
+  constructor(game){
+    super(game);
+    this.image = document.getElementById('asteroid');
+    this.frameY = Math.floor(Math.random() * 4);
+    this.lives = 5;
+  }
+}
+
 // the playground 
 class Game {
   constructor(canvas){
@@ -172,7 +184,7 @@ class Game {
     this.debug = true;
 
     this.projectilePool = [];
-    this.numberOfProjectiles = 15;
+    this.numberOfProjectiles = 25;
     this.createProjectilePool();
 
     this.enemyPool = [];
@@ -255,7 +267,7 @@ class Game {
   }
   createEnemyPool(){
     for (let i = 0; i < this.numberOfEnemies; i++){
-      this.enemyPool.push(new Enemy(this));
+      this.enemyPool.push(new Asteroid(this));
     }
   }
   getEnemy(){
