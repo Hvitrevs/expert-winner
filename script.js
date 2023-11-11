@@ -65,7 +65,7 @@ class Projectile {
     this.radius = 5;
     this.speedX = 1;
     this.speedY = 1;
-    this.speedModifier = 5;
+    this.speedModifier = 10;
     this.free = true;
 
 
@@ -115,10 +115,12 @@ class Enemy {
     this.speedX = 0;
     this.speedY = 0;
     this.angle = 0;
+    this.collided = false;
     this.free = true;
   }
   start(){
     this.free = false;
+    this.collided = false;
     this.frameX = 0;
     this.lives = this.maxLives;
     this.frameY = Math.floor(Math.random() * 4);
@@ -166,9 +168,11 @@ class Enemy {
         this.lives = 0;
         this.speedX = 0;
         this.speedY = 0;
+        this.collided = true;
       }
       if (this.game.checkCollision(this, this.game.player)){
         this.lives = 0;
+        this.collided = true;
       }
       this.game.projectilePool.forEach(projectile => {
         if (!projectile.free && this.game.checkCollision(this, projectile) && this.lives >= 1){
@@ -180,7 +184,11 @@ class Enemy {
       if (this.lives < 1 && this.game.spriteUpdate ){
         this.frameX++;
       }
-      if (this.frameX > this.maxFrame) this.reset();
+      if (this.frameX > this.maxFrame){
+        this.reset();
+        if(!this.collided) this.game.score += this.maxLives;
+      } 
+      
     }
   }
 }
@@ -219,7 +227,7 @@ class Game {
     this.debug = true;
 
     this.projectilePool = [];
-    this.numberOfProjectiles = 25;
+    this.numberOfProjectiles = 20;
     this.createProjectilePool();
 
     this.enemyPool = [];
@@ -227,11 +235,13 @@ class Game {
     this.createEnemyPool();
     this.enemyPool[0].start();
     this.enemyTimer = 0;
-    this.enemyInterval = 950;
+    this.enemyInterval = 1700;
 
     this.spriteUpdate = false;
     this.spriteTimer = 0;
     this.spriteInterval = 50;
+
+    this.score = 0;
 
 
     this.mouse = {
@@ -258,6 +268,7 @@ class Game {
   }
   render(context, deltaTime){
     this.planet.draw(context);
+    this.drawStatusText(context);
     this.player.draw(context);
     this.player.update();
 
@@ -290,6 +301,14 @@ class Game {
     }
 
   } 
+
+  drawStatusText(context){
+    context.save();
+    context.textAligh = 'left';
+    context.font = '30px Impact';
+    context.fillText('Score:' + this.score, 20, 30);
+    context.restore();
+  }
   // calculate aiming   
     calcAim(a, b){
     const dx = a.x - b.x;
@@ -329,10 +348,7 @@ class Game {
   }
 }
 
-
-
 // canvas settings
-
 
 window.addEventListener('load', function() {
   const canvas = this.document.getElementById('canva');
