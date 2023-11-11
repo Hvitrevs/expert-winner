@@ -199,7 +199,7 @@ class Asteroid extends Enemy {
     this.image = document.getElementById('asteroid');
     this.frameY = Math.floor(Math.random() * 4);
     this.frameX = 0;
-    this.maxFrame = 7;
+    this.maxFrame = 4;
     this.lives = 1;
     this.maxLives = this.lives;
   }
@@ -210,7 +210,7 @@ class Lobstermorph extends Enemy {
     this.image = document.getElementById('lobstermorph');
     this.frameY = Math.floor(Math.random() * 4);
     this.frameX = 0;
-    this.maxFrame = 14;
+    this.maxFrame = 10;
     this.lives = 2;
     this.maxLives = this.lives;
   }
@@ -242,7 +242,7 @@ class Game {
     this.spriteInterval = 50;
 
     this.score = 0;
-    this.winningScore = 10;
+    this.winningScore = 5;
 
 
     this.mouse = {
@@ -283,15 +283,15 @@ class Game {
       enemy.draw(context);
       enemy.update();
     });
-
-    if (this.enemyTimer < this.enemyInterval){
+    if (!this.gameOver){
+      if (this.enemyTimer < this.enemyInterval){
         this.enemyTimer += deltaTime;
     } else {
       this.enemyTimer = 0;
       const enemy = this.getEnemy();
       if(enemy) enemy.start();
     }
-
+    }
 
     if (this.spriteTimer < this.spriteInterval){
         this.spriteTimer += deltaTime;
@@ -309,18 +309,22 @@ class Game {
 
   drawStatusText(context){
     context.save();
-    context.textAligh = 'left';
+    context.textAligh = 'center';
     context.font = '30px Impact';
-    context.fillText('Score:' + this.score, 20, 30);
+    context.fillText('Score:' + this.score, 100, 30);
     context.restore();
     if (this.gameOver){
-      context.textAligh = 'center';
+      context.textAlign = 'center';
       let message1;
       let message2;
       if(this.score >= this.winningScore){
         message1 = 'Victory!';
-        message2 = 'Your score is' + this.score + '!';
+        message2 = 'Your score is ' + this.score + ' !';
       }
+      context.font = '100px Impact';
+      context.fillText(message1, this.width * 0.5, 200);
+      context.font = '50px Impact';
+      context.fillText(message2, this.width * 0.5, 550);
     }
   }
   // calculate aiming   
