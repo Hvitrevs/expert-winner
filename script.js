@@ -242,6 +242,7 @@ class Game {
     this.spriteInterval = 50;
 
     this.score = 0;
+    this.winningScore = 10;
 
 
     this.mouse = {
@@ -299,6 +300,10 @@ class Game {
       this.spriteTimer = 0;
       this.spriteUpdate = true;
     }
+    // win or lose
+    if (this.score >= this.winningScore){
+      this.gameOver = true;
+    }
 
   } 
 
@@ -308,6 +313,15 @@ class Game {
     context.font = '30px Impact';
     context.fillText('Score:' + this.score, 20, 30);
     context.restore();
+    if (this.gameOver){
+      context.textAligh = 'center';
+      let message1;
+      let message2;
+      if(this.score >= this.winningScore){
+        message1 = 'Victory!';
+        message2 = 'Your score is' + this.score + '!';
+      }
+    }
   }
   // calculate aiming   
     calcAim(a, b){
