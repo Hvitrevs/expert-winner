@@ -286,6 +286,7 @@ class Game {
       enemy.draw(context);
       enemy.update();
     });
+
     if (!this.gameOver){
       if (this.enemyTimer < this.enemyInterval){
         this.enemyTimer += deltaTime;
@@ -304,7 +305,7 @@ class Game {
       this.spriteUpdate = true;
     }
     // win or lose
-    if (this.score >= this.winningScore){
+    if (this.score >= this.winningScore || this.lives < 1){
       this.gameOver = true;
     }
 
@@ -316,7 +317,9 @@ class Game {
     context.font = '30px Impact';
     context.fillText('Score:' + this.score, 100, 30);
     for( let i = 0; i < this.lives; i++){
+      context.fillStyle = 'orange';
       context.fillRect(100 + 20 * i, 80, 10, 20);
+      
     }
     
     if (this.gameOver){
@@ -326,6 +329,9 @@ class Game {
       if(this.score >= this.winningScore){
         message1 = 'Victory!';
         message2 = 'Your score is ' + this.score + ' !';
+      } else {
+        message1 = 'You lose!';
+        message2 = 'Try again!';
       }
       context.font = '100px Impact';
       context.fillText(message1, this.width * 0.5, 200);
