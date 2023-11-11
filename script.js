@@ -115,6 +115,7 @@ class Enemy {
     this.speedX = 0;
     this.speedY = 0;
     this.angle = 0;
+    this.speedModifier = Math.random() * 0.5 + 0.1;
     this.collided = false;
     this.free = true;
   }
@@ -132,8 +133,8 @@ class Enemy {
       this.y = Math.random() * this.game.height;
     }
     const aim = this.game.calcAim(this, this.game.planet);
-    this.speedX = aim[0];
-    this.speedY = aim[1];
+    this.speedX = aim[0] * this.speedModifier;
+    this.speedY = aim[1] * this.speedModifier;
     this.angle = Math.atan2(aim[3], aim[2]) + Math.PI * 0.5;
   }
   reset(){
@@ -188,7 +189,7 @@ class Enemy {
       }
       if (this.frameX > this.maxFrame){
         this.reset();
-        if(!this.collided) this.game.score += this.maxLives;
+        if(!this.collided && !this.game.gameOver) this.game.score += this.maxLives;
       } 
       
     }
@@ -217,6 +218,28 @@ class Lobstermorph extends Enemy {
     this.maxLives = this.lives;
   }
 }
+class Beetlemorph extends Enemy {
+  constructor(game){
+    super(game);
+    this.image = document.getElementById('beetlemorph');
+    this.frameY = Math.floor(Math.random() * 4);
+    this.frameX = 0;
+    this.maxFrame = 3;
+    this.lives = 2;
+    this.maxLives = this.lives;
+  }
+}
+class Rhinomorph extends Enemy {
+  constructor(game){
+    super(game);
+    this.image = document.getElementById('rhinomorph');
+    this.frameY = Math.floor(Math.random() * 4);
+    this.frameX = 0;
+    this.maxFrame = 5;
+    this.lives = 3;
+    this.maxLives = this.lives;
+  }
+}
 
 // the playground 
 class Game {
@@ -226,10 +249,10 @@ class Game {
     this.height = this.canvas.height;
     this.planet = new Planet(this);
     this.player = new Player(this);
-    this.debug = true;
+    this.debug = false;
 
     this.projectilePool = [];
-    this.numberOfProjectiles = 20;
+    this.numberOfProjectiles = 30;
     this.createProjectilePool();
 
     this.enemyPool = [];
@@ -237,15 +260,15 @@ class Game {
     this.createEnemyPool();
     this.enemyPool[0].start();
     this.enemyTimer = 0;
-    this.enemyInterval = 1700;
+    this.enemyInterval = 800;
 
     this.spriteUpdate = false;
     this.spriteTimer = 0;
-    this.spriteInterval = 50;
+    this.spriteInterval = 150;
 
     this.score = 0;
-    this.winningScore = 5;
-    this.lives = 5;
+    this.winningScore = 70;
+    this.lives = 20;
 
 
     this.mouse = {
@@ -313,12 +336,13 @@ class Game {
 
   drawStatusText(context){
     context.save();
+    context.fillStyle = 'pink';
     context.textAligh = 'center';
     context.font = '30px Impact';
     context.fillText('Score:' + this.score, 100, 30);
     for( let i = 0; i < this.lives; i++){
-      context.fillStyle = 'orange';
-      context.fillRect(100 + 20 * i, 80, 10, 20);
+      context.fillStyle = 'cyan';
+      context.fillRect(100 + 10 * i, 80, 10, 20);
       
     }
     
@@ -326,17 +350,23 @@ class Game {
       context.textAlign = 'center';
       let message1;
       let message2;
+      let message3;
       if(this.score >= this.winningScore){
         message1 = 'Victory!';
-        message2 = 'Your score is ' + this.score + ' !';
+        message2 = 'You have lasted against ' + this.score + ' enemies!' 
+        message3 = 'You have ' + this.lives + ' lives letf';
       } else {
         message1 = 'You lose!';
-        message2 = 'Try again!';
+        message2 = 'You have ' + this.lives + ' lives letf';
+        message3 = 'Try again!';
       }
+      context.fillStyle = 'pink';
       context.font = '100px Impact';
       context.fillText(message1, this.width * 0.5, 200);
-      context.font = '50px Impact';
+      context.font = '40px Impact';
       context.fillText(message2, this.width * 0.5, 550);
+      context.font = '40px Impact';
+      context.fillText(message3, this.width * 0.5, 600);
     }
     context.restore();
   }
@@ -370,6 +400,8 @@ class Game {
     for (let i = 0; i < this.numberOfEnemies; i++){
       this.enemyPool.push(new Asteroid(this));
       this.enemyPool.push(new Lobstermorph(this));
+      this.enemyPool.push(new Beetlemorph(this));
+      this.enemyPool.push(new Rhinomorph(this));
     }
   }
   getEnemy(){
