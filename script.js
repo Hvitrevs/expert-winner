@@ -164,15 +164,17 @@ class Enemy {
         this.x += this.speedX;
         this.y += this.speedY;
 
-      if (this.game.checkCollision(this, this.game.planet)){
+      if (this.game.checkCollision(this, this.game.planet) && this.lives >= 1){
         this.lives = 0;
         this.speedX = 0;
         this.speedY = 0;
         this.collided = true;
+        this.game.lives--;
       }
-      if (this.game.checkCollision(this, this.game.player)){
+      if (this.game.checkCollision(this, this.game.player) && this.lives >= 1){
         this.lives = 0;
         this.collided = true;
+        this.game.lives--;
       }
       this.game.projectilePool.forEach(projectile => {
         if (!projectile.free && this.game.checkCollision(this, projectile) && this.lives >= 1){
@@ -243,6 +245,7 @@ class Game {
 
     this.score = 0;
     this.winningScore = 5;
+    this.lives = 5;
 
 
     this.mouse = {
@@ -312,7 +315,10 @@ class Game {
     context.textAligh = 'center';
     context.font = '30px Impact';
     context.fillText('Score:' + this.score, 100, 30);
-    context.restore();
+    for( let i = 0; i < this.lives; i++){
+      context.fillRect(100 + 20 * i, 80, 10, 20);
+    }
+    
     if (this.gameOver){
       context.textAlign = 'center';
       let message1;
@@ -326,6 +332,7 @@ class Game {
       context.font = '50px Impact';
       context.fillText(message2, this.width * 0.5, 550);
     }
+    context.restore();
   }
   // calculate aiming   
     calcAim(a, b){
