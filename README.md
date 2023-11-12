@@ -4,4 +4,6 @@
 
 pure vanilla javascript, no libs 
 
-live https://shiny-mermaid-881c44.netlify.app
+[See Live](https://shiny-mermaid-881c44.netlify.app)
+
+
