@@ -2,8 +2,7 @@
 
 ## Buble shooter game
 
-To win you have to last against at least 70 enemies.
-
+To win you have to last against at least 70 enemies.<br>
 You lose if you have depleted all 20 lives.
 
 pure vanilla javascript, no libs 
