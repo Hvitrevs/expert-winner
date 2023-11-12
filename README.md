@@ -1,6 +1,6 @@
 # expert-winner
 
-## Buble shooter game
+## Space shooter game
 
 To win you have to last against at least 70 enemies.<br>
 You lose if you have depleted all 20 lives.
