@@ -5,6 +5,8 @@
 To win you have to last against at least 70 enemies.<br>
 You lose if you have depleted all 20 lives.
 
+## Uses:
+
 pure vanilla javascript, no libs 
 
 [See Live](https://shiny-mermaid-881c44.netlify.app)
