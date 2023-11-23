@@ -1,4 +1,4 @@
-# expert-winner
+# javascript game
 
 ## Space shooter game
 
